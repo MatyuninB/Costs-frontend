@@ -4,8 +4,6 @@ let date = new Date();
 
 
 
-
-
 window.onload = async () => {
   await getCostsAPI();
   
@@ -37,7 +35,7 @@ inputListener = () => {
     let cost = inputCost.value;
    
     if(key.keyCode === 13 && place && cost) {
-      await addCostAPI(place, cost, `${date.getDate()} ${date.getMonth()} ${date.getFullYear()}`);
+      await addCostAPI(place, cost, date.toLocaleString("ru", {day: 'numeric', month: 'numeric', year: 'numeric'}));
 
       inputCost.value = '';
       inputWhere.value  = '';
@@ -183,6 +181,7 @@ getCostsAPI = async() => {
 }
 
 addCostAPI = async(shop, cost ,date) => {
+  console.log(date)
   await fetch('http://localhost:8000/newCost', {
     method: 'POST',
     headers: {
@@ -207,10 +206,12 @@ deleteCostAPI = async(id) => {
       '_id' : id,
     }),
   });
+  await getSummAPI();
   await getCostsAPI();
 }
 
 editCostAPI = async(id, shop, cost, date) => {
+  console.log(date)
   await fetch('http://localhost:8000/editCost', {
     method: 'PATCH',
     headers: {

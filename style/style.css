@@ -61,9 +61,9 @@ h1 {
   width: 90%;
   display: flex;
   justify-content: space-between;
-  margin: 0 auto 1rem;
+  margin: 0 auto;
   align-items: center;
-  gap: 5px;
+  gap: 2px;
 }
 .costs div {
   width: 30%;
