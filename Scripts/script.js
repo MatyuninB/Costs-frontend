@@ -53,14 +53,14 @@ render = () => {
   }
 
   costs.forEach( (elem, i) => {
-    const content = document.createElement('li');
+    const content = document.createElement('div');
     const placeHTML = document.createElement('div');
     const costHTML = document.createElement ('div');
     const dateHTML  = document.createElement ('div');
     const editImg = document.createElement ('img');
     const trashImg = document.createElement ('img');
     const summHTML = document.querySelector('.total')
-    const prefix = document.createElement('p');
+    const prefix = document.createElement('div');
 
     summHTML.innerText = `Итого: ${summ} руб.`;
 
@@ -89,7 +89,7 @@ render = () => {
       id: `date${i}`
     });
     Object.assign(editImg,  {
-      className : "icon",
+      className : "icon editIcon",
       src: '../img/edit.png',
       id: `edit${i}`
     });
@@ -123,7 +123,7 @@ deleteCost = (i) => {
 
 editCost = (i) => {
   let container = document.querySelector(`#costs${i}`)
-  let doneButton = document.createElement('p');
+  let doneButton = document.createElement('div');
   let costEdit = document.createElement('input'); 
   let shopEdit = document.createElement('input'); 
   let dataEdit = document.createElement('input');
@@ -175,8 +175,10 @@ getCostsAPI = async() => {
   let tmp  = await fetch('http://localhost:8000/allCosts', {method: "GET"})
   let result = await tmp.json();
   costs = result;
+  
   await getSummAPI();
   // sortByDate();
+
   render();
 }
 
@@ -229,4 +231,5 @@ editCostAPI = async(id, shop, cost, date) => {
 
 getSummAPI = async() => {
   summ = await (await fetch('http://localhost:8000/summCost')).json();
+  render()
 }
