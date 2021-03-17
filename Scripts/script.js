@@ -27,6 +27,7 @@ inputListener = () => {
 
       inputCost.value = '';
       inputWhere.value  = '';
+      inputWhere.focus()
     }
   });
 
@@ -39,6 +40,7 @@ inputListener = () => {
 
       inputCost.value = '';
       inputWhere.value  = '';
+      inputWhere.focus()
     }
   });
 }
@@ -46,6 +48,7 @@ inputListener = () => {
     
 
 render = () => {
+  let currEdit = false;
   const container = document.querySelector('.waste')
   
   while(container.firstChild) {
@@ -97,6 +100,28 @@ render = () => {
       className : "icon",
       src: '../img/trash.png',
     });
+   
+
+    placeHTML.addEventListener('dblclick', function () {
+      if(!currEdit){
+        currEdit = true;
+        placeEdit(i);
+      }
+    });
+    costHTML.addEventListener('dblclick', function () {
+      if(!currEdit){
+        currEdit = true;
+        costOfCostEdit(i);
+      }
+    }); 
+    
+    dateHTML.addEventListener('dblclick', function () {
+      if(!currEdit){
+        currEdit = true;
+        dateEdit(i);
+      }
+    }); 
+
 
     content.appendChild(prefix);
     content.appendChild(placeHTML);
@@ -110,7 +135,10 @@ render = () => {
     }
 
     editImg.onclick = function () {
-      editCost(i);
+        if(!currEdit){
+        currEdit = true;
+        editCost(i);
+        }
     }
     container.appendChild(content)
   });
@@ -127,15 +155,16 @@ editCost = (i) => {
   let costEdit = document.createElement('input'); 
   let shopEdit = document.createElement('input'); 
   let dataEdit = document.createElement('input');
+  let currDate = document.querySelector(`#date${i}`) 
   let currCost = document.querySelector(`#cost${i}`);
   let currShop = document.querySelector(`#shop${i}`);
-  let currDate = document.querySelector(`#date${i}`) 
   let editButton = document.querySelector(`#edit${i}`)
 
   
 
   Object.assign(dataEdit, {
     className: 'editInput',
+    format: "DD MMMM YYYY",
     type: 'date',
     value: currDate.innerText.toString().split(' ').reverse().join('-')
   });
@@ -161,19 +190,158 @@ editCost = (i) => {
 
   doneButton.onclick = function () {
     let date = dataEdit.value.split('-').reverse().join(' ');
+    currEdit = false;
     editCostAPI(costs[i]._id, shopEdit.value, costEdit.value, date);
   }
   document.addEventListener('keydown', async(key) => {
+    let date = dataEdit.value.split('-').reverse().join(' ');
     if(key.keyCode === 13) {
-      let date = dataEdit.value.split('-').reverse().join(' ');
-      editCostAPI(costs[i]._id, shopEdit.value, costEdit.value, date);
+      if(document.activeElement === shopEdit) {
+        dataEdit.focus();
+      } else if(document.activeElement === dataEdit) {
+        costEdit.focus();
+      } else if (document.activeElement === costEdit) {
+        currEdit = false;
+        editCostAPI(costs[i]._id, shopEdit.value, costEdit.value, date);
+      }
     }
   });
 }
 
-// sortByDate = () => {
-//   costs.sort( (a, b) => {a > b? 1 : -1});
-// }
+placeEdit = (i) => {
+  let editButton = document.querySelector(`#edit${i}`)
+  let container = document.querySelector(`#costs${i}`)
+  let shopEdit = document.createElement('input');
+  let currShop = document.querySelector(`#shop${i}`); 
+  let doneButton = document.createElement('div');
+  let costEdit = document.getElementById(`costEd${i}`) || false;
+
+  Object.assign(doneButton, {
+    className: "done",
+    innerText: "DONE",
+  })
+  Object.assign(shopEdit, {
+    className: 'editInput',
+    type: 'text',
+    value: currShop.innerText,
+    id: `shopEd${i}`
+  });
+  
+  container.replaceChild(shopEdit, currShop);
+  if(editButton){
+    container.replaceChild(doneButton, editButton);
+  }
+  shopEdit.focus() 
+ 
+  shopEdit.addEventListener('focusout', () => {
+      editCostAPI(costs[i]._id, shopEdit.value, costs[i].cost, costs[i].date);
+      currEdit = false;
+  });
+
+
+  shopEdit.addEventListener('keydown', async(key) => {
+    let costEdit = document.getElementById(`costEd${i}`) || false;
+      if(key.keyCode === 13) {
+        editCostAPI(costs[i]._id, shopEdit.value, costs[i].cost, costs[i].date);
+        currEdit = false;
+      }
+  });
+
+  doneButton.onclick = function () {
+      editCostAPI(costs[i]._id, shopEdit.value, costs[i].cost, costs[i].date);
+      currEdit = false;  
+    }
+}
+
+costOfCostEdit = (i) => {                             //best naming ever
+  let editButton = document.querySelector(`#edit${i}`);
+  let container = document.querySelector(`#costs${i}`);
+  let costEdit = document.createElement('input'); 
+  let currCost = document.querySelector(`#cost${i}`); 
+  let doneButton = document.createElement('div');
+  let shopEdit = document.getElementById(`shopEd${i}`) || false;
+
+  Object.assign(doneButton, {
+    className: "done",
+    innerText: "DONE",
+  })
+  Object.assign(costEdit, {
+    className: 'editInput',
+    type: 'number',
+    value: parseInt(currCost.innerText),
+    id: `costEd${i}`
+  });
+
+  
+    container.replaceChild(doneButton, editButton);
+    container.replaceChild(costEdit, currCost);
+    costEdit.focus();
+
+
+    costEdit.addEventListener('keydown', async(key) => {
+    if(key.keyCode === 13) {
+      editCostAPI(costs[i]._id, costs[i].shop, costEdit.value, costs[i].date);
+      currEdit = false;
+    }
+  });
+
+  costEdit.addEventListener('focusout', () => {
+    editCostAPI(costs[i]._id, costs[i].shop, costEdit.value, costs[i].date);
+    currEdit = false;
+  });
+
+  doneButton.onclick = function () {
+    editCostAPI(costs[i]._id, costs[i].shop, costEdit.value, costs[i].date);
+    currEdit = false;
+  }
+}
+
+dateEdit = (i) => {
+  let editButton = document.querySelector(`#edit${i}`)
+  let container = document.querySelector(`#costs${i}`)
+  let doneButton = document.createElement('div');
+  let dataEdit = document.createElement('input');
+  let currDate = document.querySelector(`#date${i}`) 
+
+  Object.assign(doneButton, {
+    className: "done",
+    innerText: "DONE",
+  })
+  Object.assign(dataEdit, {
+    timezone: 'ru',
+    className: 'editInput',
+    type: 'date',
+    value: currDate.innerText.toString().split(' ').reverse().join('-')
+  });
+
+  container.replaceChild(dataEdit, currDate);
+  container.replaceChild(doneButton, editButton);
+  
+  dataEdit.focus() 
+ 
+  dataEdit.addEventListener('focusout', () => {
+    let date = dataEdit.value.split('-').reverse().join(' ');
+    editCostAPI(costs[i]._id, costs[i].shop, costs[i].cost, date);
+    currEdit = false;
+  });
+
+  dataEdit.addEventListener('keydown', async(key) => {
+      if(key.keyCode === 13) {
+        let date = dataEdit.value.split('-').reverse().join(' ');
+        editCostAPI(costs[i]._id, costs[i].shop, costs[i].cost, date);
+        currEdit = false;
+      }
+  });
+
+  doneButton.onclick = function () {
+      let date = dataEdit.value.split('-').reverse().join(' ');
+      editCostAPI(costs[i]._id, costs[i].shop, costs[i].cost, date);
+      currEdit = false;  
+    }
+}
+
+
+
 
 // API's
 
@@ -189,7 +357,6 @@ getCostsAPI = async() => {
 }
 
 addCostAPI = async(shop, cost ,date) => {
-  console.log(date)
   await fetch('http://localhost:8000/newCost', {
     method: 'POST',
     headers: {
@@ -219,7 +386,6 @@ deleteCostAPI = async(id) => {
 }
 
 editCostAPI = async(id, shop, cost, date) => {
-  console.log(date)
   await fetch('http://localhost:8000/editCost', {
     method: 'PATCH',
     headers: {
