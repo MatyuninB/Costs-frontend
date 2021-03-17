@@ -79,7 +79,7 @@ render = () => {
     });
     Object.assign(costHTML, {
       className : "cost",
-      innerText : `${costs[i].cost} р.`,
+      innerText : `${costs[i].cost}р.`,
       id: `cost${i}`,
     });
     Object.assign(dateHTML,  {
@@ -163,6 +163,12 @@ editCost = (i) => {
     let date = dataEdit.value.split('-').reverse().join(' ');
     editCostAPI(costs[i]._id, shopEdit.value, costEdit.value, date);
   }
+  document.addEventListener('keydown', async(key) => {
+    if(key.keyCode === 13) {
+      let date = dataEdit.value.split('-').reverse().join(' ');
+      editCostAPI(costs[i]._id, shopEdit.value, costEdit.value, date);
+    }
+  });
 }
 
 // sortByDate = () => {
