@@ -3,6 +3,7 @@
     margin-right: 5%;
   }
 }
+
 @media screen and (max-width: 560px) {
   h1 {
     font-size: 1.5rem;
