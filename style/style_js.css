@@ -1,10 +1,12 @@
 .icon {
   height: 40px;
 }
+
 .editIcon {
   margin-left: auto;
 }
-.costs{
+
+.costs {
   width: 90%;
   box-shadow: 0px 1px 3px black;
   display: flex;
@@ -16,9 +18,11 @@
   margin: 1% 0 0 10px;
   word-wrap:break-word
 }
+
 .costs:last-child {
   margin-bottom: 10%;
 }
+
 .where {
   width: 29%;
   margin-right: 2%;
@@ -29,7 +33,7 @@
   color: darkslategrey;
 }
 
-.cost{
+.cost {
   max-width: 20%;
   color: darkblue;
 }
@@ -45,12 +49,14 @@
   height: 30px;
   font-size: 20px;
 }
-.editInput:nth-child(3){
+
+.editInput:nth-child(3) {
   max-width: 18%;
   padding:1px 2px ;
   margin-right: 5%;
 }
-.editInput:nth-child(4){
+
+.editInput:nth-child(4) {
   width: 13%;
   padding:1px 2px ;
 }
