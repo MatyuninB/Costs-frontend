@@ -191,7 +191,7 @@ editCost = (i) => {
   container.replaceChild(costEdit, currCost);
   container.replaceChild(doneButton, editButton);
 
-  doneButton.onclick = function () {
+  doneButton.onclick = () => {
     let date = dataEdit.value.split('-').reverse().join(' ');
     
     currEdit = false;
@@ -202,13 +202,13 @@ editCost = (i) => {
     let date = dataEdit.value.split('-').reverse().join(' ');
     if(key.keyCode === 13) {
       switch(document.activeElement) {
-        case shopEdit :
+        case shopEdit:
           dataEdit.focus();
           break;
-        case dataEdit :
+        case dataEdit:
           costEdit.focus();
           break;
-        case costEdit :
+        case costEdit:
           currEdit = false;
           editCostAPI(costs[i]._id, shopEdit.value, costEdit.value, date);
           break;
